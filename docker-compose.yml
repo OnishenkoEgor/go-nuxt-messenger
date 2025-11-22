@@ -1,0 +1,23 @@
+services:
+  front:
+    image: front-dev
+    ports:
+      - "8080:3000"
+    volumes:
+      - ./front:/app
+    entrypoint: ./entrypoint.sh
+    networks:
+      - local
+  auth:
+    image: go-auth
+    volumes:
+      - ./auth:/app
+    ports:
+      - "8081:8080"
+    entrypoint: ./entrypoint.sh
+    networks:
+      - local
+
+networks:
+  local:
+    name: local
