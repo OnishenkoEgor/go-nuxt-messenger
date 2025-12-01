@@ -1,8 +1,11 @@
 <script setup lang="ts">
 
 </script>
+
 <template>
-  <UApp>
-    <NuxtPage/>
-  </UApp>
+<p>test</p>
 </template>
+
+<style scoped>
+
+</style>

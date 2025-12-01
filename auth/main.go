@@ -1,35 +1,27 @@
 package main
 
 import (
-	"encoding/json"
-	_ "fmt"
+	"auth/handlers"
+	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
-import "net/http"
-
-type Auth struct {
-	email    string
-	password string
-}
-
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-
-	var auth Auth
-
-	err := decoder.Decode(&auth)
-
-	if err != nil {
-		panic(err)
-	}
-
-}
 
 func main() {
-	http.HandleFunc("/api/login", loginHandler)
+	r := mux.NewRouter()
 
-	err := http.ListenAndServe(":8080", nil)
+	initRoutes(r)
+
+	handler := cors.AllowAll().Handler(r)
+	err := http.ListenAndServe(":8080", handler)
 
 	if err != nil {
 		return
 	}
+}
+
+func initRoutes(r *mux.Router) {
+	r.HandleFunc("/api/login", handlers.LoginHandler).Methods(http.MethodPost)
+	r.HandleFunc("/test", handlers.TestHandler).Methods(http.MethodGet)
 }
