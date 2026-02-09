@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package sso;
+
+service UserInfo {
+  rpc Create (CreateUserRequest) returns (CreateUserResponse);
+}
+
+message CreateUserRequest {
+
+}
+
+message CreateUserResponse {
+
+}
