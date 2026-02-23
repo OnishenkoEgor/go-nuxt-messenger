@@ -12,7 +12,15 @@ const items: NavigationMenuItem[] = [
   {
     label: 'Users',
     icon: 'i-lucide-users',
-    to: 'users'
+    to: '/users'
+  }, {
+    label: 'Roles',
+    icon: 'i-lucide-user-cog',
+    to: '/roles',
+  }, {
+    label: 'Permissions',
+    icon: 'i-lucide-align-horizontal-justify-center',
+    to: '/permissions'
   }
 ];
 const defaultPageTitle: string = 'Default title';
@@ -37,15 +45,15 @@ useHead({
     </UDashboardSidebar>
     <UDashboardPanel>
       <template #header>
-          <UDashboardNavbar :title="pageTitle">
-            <template #leading>
-              <UButton @click="router.back()"
-                       icon="i-lucide-arrow-left"
-                       color="neutral"
-                       variant="outline">
-              </UButton>
-            </template>
-          </UDashboardNavbar>
+        <UDashboardNavbar :title="pageTitle">
+          <template #leading>
+            <UButton @click="router.back()"
+                     icon="i-lucide-arrow-left"
+                     color="neutral"
+                     variant="outline">
+            </UButton>
+          </template>
+        </UDashboardNavbar>
       </template>
       <template #body>
         <NuxtPage/>
