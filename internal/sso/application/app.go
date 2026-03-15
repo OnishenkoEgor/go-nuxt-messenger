@@ -2,9 +2,9 @@ package application
 
 import (
 	"fmt"
-	"sso/application/user/command"
-	"sso/application/user/query"
-	"sso/domain"
+	"messenger/sso/application/user/command"
+	"messenger/sso/application/user/query"
+	"messenger/sso/domain"
 )
 
 type Queries struct {

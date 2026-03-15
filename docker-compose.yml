@@ -14,7 +14,9 @@ services:
       - local
 
   server:
-    image: sso:latest
+    build:
+      context: ./internal/sso
+      dockerfile: dev.Dockerfile
     volumes:
       - ./internal/sso/:/app
       - ./internal/common/:/common

@@ -1,4 +1,4 @@
-package controller
+package router
 
 import (
 	"encoding/json"
@@ -8,17 +8,6 @@ import (
 type Response struct {
 	Errors bool `json:"errors"`
 	Data   any  `json:"data"`
-}
-
-func ReadRequest[T any](r *http.Request, entity *T) error {
-	decoder := json.NewDecoder(r.Body)
-
-	err := decoder.Decode(entity)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func WriteResponse[T any | []T](errors bool, data T, w http.ResponseWriter) {

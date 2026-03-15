@@ -20,9 +20,9 @@ async function loadUsers(): Promise<void> {
   });
 }
 
-async function removeUser(id: string): Promise<void>{
+async function removeUser(id: number): Promise<void>{
   console.log(`remove user ${id}`);
-  const deleted = await UsersApi.remove(id);
+  const deleted = await UsersApi.remove(id.toString());
 }
 
 loadUsers();

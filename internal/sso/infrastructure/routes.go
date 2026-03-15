@@ -1,35 +1,20 @@
 package infrastructure
 
 import (
+	"messenger/router"
+	"messenger/sso/application"
+	"messenger/sso/infrastructure/user/rest/controller"
 	"net/http"
-	"sso/application"
-	"sso/infrastructure/user/rest/controller"
 )
 
-type Route struct {
-	path    string
-	handler func(w http.ResponseWriter, r *http.Request)
-	method  string
-}
-
-func NewRoute(path string, handler func(w http.ResponseWriter, r *http.Request), method string) Route {
-	return Route{
-		path:    path,
-		handler: handler,
-		method:  method,
-	}
-}
-
-type Routes []Route
-
-func NewRoutes(app application.Application) Routes {
+func NewRoutes(app application.Application) []router.Route {
 	userController := controller.NewUserController(app)
 
-	return Routes{
-		NewRoute("/api/users", userController.GetAll, http.MethodGet),
-		NewRoute("/api/users/{id}", userController.Get, http.MethodGet),
-		NewRoute("/api/users/create", userController.Create, http.MethodPost),
-		NewRoute("/api/users/{id}", userController.Update, http.MethodPut),
-		NewRoute("/api/users/{id}", userController.Delete, http.MethodDelete),
+	return []router.Route{
+		router.NewRoute("/api/users", userController.GetAll, http.MethodGet),
+		router.NewRoute("/api/users/{id}", userController.Get, http.MethodGet),
+		router.NewRoute("/api/users/create", userController.Create, http.MethodPost),
+		router.NewRoute("/api/users/{id}", userController.Update, http.MethodPut),
+		router.NewRoute("/api/users/{id}", userController.Delete, http.MethodDelete),
 	}
 }

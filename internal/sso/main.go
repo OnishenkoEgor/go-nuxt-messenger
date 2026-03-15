@@ -2,18 +2,18 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/lib/pq"
-
 	"fmt"
-	"github.com/gorilla/mux"
-	"sso/application"
-	"sso/infrastructure"
+	_ "github.com/lib/pq"
+	"messenger/router"
+	"messenger/sso/application"
+	"messenger/sso/infrastructure"
 )
 
 func main() {
 	fmt.Println("Server started")
 
-	dbUrl := "postgres://user:password@db/sso?sslmode=verify-full"
+	//TODO ssl?
+	dbUrl := "postgres://user:password@db/sso?sslmode=disable"
 	dbName := "postgres"
 	db, err := sql.Open(dbName, dbUrl)
 
@@ -31,25 +31,18 @@ func main() {
 
 	fmt.Println("Connected to DB!")
 
-	if false {
-		migrations := infrastructure.NewMigrations(db)
-		err = migrations.Migrate()
-
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		fmt.Println("DB migrations success!")
-	}
-
 	repositories := infrastructure.NewRepositories(db)
 	app, cleanup := application.NewApplication(repositories)
 	defer cleanup()
 
-	router := infrastructure.NewRouter(mux.NewRouter(), app)
-	err = router.Serve(":8080")
+	routes := infrastructure.NewRoutes(app)
+	r, err := router.NewRouter(routes)
 
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = r.Serve(":8080")
 	if err != nil {
 		fmt.Println(err)
 	}

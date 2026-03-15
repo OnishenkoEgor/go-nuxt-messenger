@@ -1,11 +1,11 @@
 package response
 
 import (
-	"sso/domain/user"
+	"messenger/sso/domain/user"
 )
 
 type UserResponse struct {
-	Id       string `json:"id"`
+	Id       int    `json:"id"`
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }

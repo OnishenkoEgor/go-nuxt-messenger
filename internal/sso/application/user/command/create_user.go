@@ -1,8 +1,7 @@
 package command
 
 import (
-	"github.com/google/uuid"
-	"sso/domain/user"
+	"messenger/sso/domain/user"
 )
 
 type CreateUserCommand struct {
@@ -21,17 +20,14 @@ func NewCreateUserCommandHandler(repo user.Repository) CreateUserCommandHandler 
 }
 
 func (h CreateUserCommandHandler) Handle(cmd CreateUserCommand) error {
-	uuid, err := uuid.NewUUID()
-	if err != nil {
-		return err
-	}
+	u, err := user.NewUser(cmd.Login, cmd.Password)
 
-	u, err := user.NewUser(uuid.String(), cmd.Login, cmd.Password)
 	if err != nil {
 		return err
 	}
 
 	err = h.repo.Create(u)
+
 	if err != nil {
 		return err
 	}

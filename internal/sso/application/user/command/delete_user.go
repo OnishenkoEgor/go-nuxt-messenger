@@ -1,7 +1,7 @@
 package command
 
 import (
-	"sso/domain/user"
+	"messenger/sso/domain/user"
 )
 
 type DeleteUserCommand struct {

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import {h, resolveComponent} from 'vue'
+
 import type {User} from "../../types/User";
 import type {TableColumn} from '@nuxt/ui'
-
-const button = resolveComponent('UButton');
 
 const {users} = defineProps({
   users: {
@@ -12,11 +10,14 @@ const {users} = defineProps({
   }
 });
 
-const emit = defineEmits({
-  delete: (id: string) => {
-    return true
-  }
-});
+const emit = defineEmits<{
+  (e: 'delete', id: number): void
+}>();
+
+function del(id: number): void {
+  emit('delete', id);
+}
+
 const columns: TableColumn<User>[] = [
   {
     accessorKey: 'id',
@@ -31,26 +32,27 @@ const columns: TableColumn<User>[] = [
     header: 'Password'
   },
   {
+    id: 'actions',
     header: 'Actions',
-    cell({row}) {
-      return h(button, {
-        color: 'error',
-        onClick: () => {
-          console.log(row.original)
-          if (row.original.id) {
-            console.log('onClick')
-            emit('delete', row.original.id)
-          }
-        },
-      }, () => 'Remove')
-    },
   }
 ];
 
 </script>
 
 <template>
-  <UTable :data="users" :columns="columns" class="flex-1"/>
+  <UTable :data="users" :columns="columns" class="flex-1">
+    <template #actions-cell="{row}">
+      <UButton v-if="row.original.id !== undefined"
+               @click="del(row.original.id)"
+               color="error">
+        Delete
+      </UButton>
+      <UButton v-if="row.original.id !== undefined"
+               :to="`/users/${row.original.id}`">
+        Edit
+      </UButton>
+    </template>
+  </UTable>
 </template>
 
 <style scoped>

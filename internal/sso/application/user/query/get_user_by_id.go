@@ -1,6 +1,6 @@
 package query
 
-import "sso/domain/user"
+import "messenger/sso/domain/user"
 
 type GetUserByIdQuery struct {
 	Id string

@@ -25,7 +25,6 @@ const user: User = reactive<User>({
 });
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  console.log('submit');
   UsersApi.create(user).then(res=>{
     console.log('component res')
     console.log(res);
