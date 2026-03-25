@@ -10,19 +10,38 @@ definePageMeta({
 useHead({
   title: 'Users'
 });
+const toast = useToast();
 
 let users: Ref<User[]> = ref([]);
 
 async function loadUsers(): Promise<void> {
   UsersApi.getAll().then((loadedUsers: User[]) => {
+    console.log(loadedUsers);
     users.value = loadedUsers;
-    console.log(users.value);
+  }).catch(e => {
+    toast.add({
+      title: 'Failed get users.',
+      description: e instanceof Error ? e.message : '',
+      progress: false,
+      color: 'error'
+    });
   });
 }
 
-async function removeUser(id: number): Promise<void>{
-  console.log(`remove user ${id}`);
-  const deleted = await UsersApi.remove(id.toString());
+async function removeUser(id: number): Promise<void> {
+  try {
+    await UsersApi.delById(id);
+
+    console.log('user removed');
+    await loadUsers();
+  } catch (e: any) {
+    toast.add({
+      title: 'Failed delete user.',
+      description: e instanceof Error ? e.message : '',
+      progress: false,
+      color: 'error'
+    });
+  }
 }
 
 loadUsers();

@@ -3,7 +3,7 @@ package query
 import "messenger/sso/domain/user"
 
 type GetUserByIdQuery struct {
-	Id string
+	Id int
 }
 
 type GetUserByIdQueryHandler struct {
@@ -16,6 +16,6 @@ func NewGetUserByIdQueryHandler(repo user.Repository) GetUserByIdQueryHandler {
 	}
 }
 
-func (h GetUserByIdQueryHandler) Handle(q GetUserByIdQuery) (*user.User, error) {
+func (h *GetUserByIdQueryHandler) Handle(q GetUserByIdQuery) (*user.User, error) {
 	return h.repo.GetById(q.Id)
 }

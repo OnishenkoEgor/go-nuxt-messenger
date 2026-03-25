@@ -14,6 +14,7 @@ type Queries struct {
 
 type Commands struct {
 	CreateUserCommand command.CreateUserCommandHandler
+	UpdateUserCommand command.UpdateUserCommandHandler
 	DeleteUserCommand command.DeleteUserCommandHandler
 }
 
@@ -26,6 +27,7 @@ func NewApplication(repositories domain.Repositories) (Application, func()) {
 	var app = Application{
 		Commands: Commands{
 			CreateUserCommand: command.NewCreateUserCommandHandler(repositories.UserRepository),
+			UpdateUserCommand: command.NewUpdateUserCommandHandler(repositories.UserRepository),
 			DeleteUserCommand: command.NewDeleteUserCommandHandler(repositories.UserRepository),
 		},
 		Queries: Queries{

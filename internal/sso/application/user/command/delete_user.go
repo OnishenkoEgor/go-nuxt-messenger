@@ -5,7 +5,7 @@ import (
 )
 
 type DeleteUserCommand struct {
-	Id string
+	Id int
 }
 
 type DeleteUserCommandHandler struct {
@@ -18,7 +18,7 @@ func NewDeleteUserCommandHandler(repo user.Repository) DeleteUserCommandHandler 
 	}
 }
 
-func (h DeleteUserCommandHandler) Handle(cmd DeleteUserCommand) error {
+func (h *DeleteUserCommandHandler) Handle(cmd DeleteUserCommand) error {
 	err := h.repo.Delete(cmd.Id)
 
 	return err

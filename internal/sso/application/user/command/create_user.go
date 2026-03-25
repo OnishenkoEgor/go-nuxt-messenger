@@ -19,7 +19,7 @@ func NewCreateUserCommandHandler(repo user.Repository) CreateUserCommandHandler 
 	}
 }
 
-func (h CreateUserCommandHandler) Handle(cmd CreateUserCommand) error {
+func (h *CreateUserCommandHandler) Handle(cmd CreateUserCommand) error {
 	u, err := user.NewUser(cmd.Login, cmd.Password)
 
 	if err != nil {

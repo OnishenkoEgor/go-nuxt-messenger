@@ -1,7 +1,11 @@
 import {useFetch} from "nuxt/app";
+import type {FetchError} from "ofetch";
+import type {AsyncData} from 'nuxt/app'
+
+const ERROR_STATUS = 'error';
 
 export interface ApiResponse<T = null> {
-    errors: string,
+    errors: boolean,
     data: T
 }
 
@@ -18,65 +22,69 @@ export abstract class BaseApi {
     };
 
     protected static async get<T>(route: string, params: object = {}): Promise<ApiResponse<T> | null> {
-        //TODO add query params
-        const {data, status, error} = await useFetch<ApiResponse<T>>(this.prepareUrl(route, params), {
+        const response = await $fetch<ApiResponse<T>>(this.prepareUrl(route, params), {
             method: 'GET',
             headers: {
                 ...this.corsHeaders,
                 ...this.contentTypeHeaders
             }
-        });
+        }).catch(err => err);
 
-        if (!data.value) {
-            return null;
-        }
-
-        return data.value;
+        return this.prepareResponse(response);
     }
 
     protected static async post<T>(route: string, params: object = {}, body: object = {}): Promise<ApiResponse<T> | null> {
-        const {data} = await useFetch<ApiResponse<T>>(this.prepareUrl(route, params), {
+        const response = await $fetch<ApiResponse<T>>(this.prepareUrl(route, params), {
             method: 'POST',
             headers: {
                 ...this.corsHeaders,
                 ...this.contentTypeHeaders
             },
             body: JSON.stringify(body)
-        });
+        }).catch(err => err);
 
-        if (!data.value) {
-            return null;
-        }
-
-        return data.value;
+        return this.prepareResponse(response);
     }
 
     protected static async patch(): Promise<ApiResponse> {
         return new Promise(() => null);
     }
 
-    protected static async put(): Promise<ApiResponse> {
-        return new Promise(() => null);
+    protected static async put<T>(route: string, params: object = {}, body: object = {}): Promise<ApiResponse<T> | null> {
+        const response = await $fetch<ApiResponse<T>>(this.prepareUrl(route, params), {
+            method: 'PUT',
+            headers: {
+                ...this.corsHeaders,
+                ...this.contentTypeHeaders
+            },
+            body: JSON.stringify(body)
+        }).catch(err => err);
+
+        return this.prepareResponse(response);
     }
 
     protected static async del<T>(route: string): Promise<ApiResponse<T> | null> {
-        const {data} = await useFetch<ApiResponse<T>>(this.prepareUrl(route), {
+        const response = await $fetch<ApiResponse<T>>(this.prepareUrl(route), {
             method: 'DELETE',
             headers: {
                 ...this.corsHeaders,
                 ...this.contentTypeHeaders
             },
-        });
+        }).catch(err => err);
 
-        if (!data.value) {
-            return null;
-        }
-
-        return data.value;
+        return this.prepareResponse(response);
     }
 
     private static prepareUrl(route: string, params: object = {}): string {
         //TODO add query params
         return this.baseUrl + route;
+    }
+
+    private static prepareResponse<T>(response: ApiResponse<T> | undefined): ApiResponse<T> | null {
+        if (response === undefined) {
+            return null;
+        }
+
+        return response;
     }
 }

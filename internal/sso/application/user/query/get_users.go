@@ -17,7 +17,7 @@ func NewGetUsersQueryHandler(repo user.Repository) GetUsersQueryHandler {
 	}
 }
 
-func (h GetUsersQueryHandler) Handle(_ GetUsersQuery) ([]*user.User, error) {
+func (h *GetUsersQueryHandler) Handle(_ GetUsersQuery) ([]*user.User, error) {
 	users, err := h.repo.Get()
 
 	return users, err

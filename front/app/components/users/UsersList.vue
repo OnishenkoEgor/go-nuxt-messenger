@@ -42,15 +42,17 @@ const columns: TableColumn<User>[] = [
 <template>
   <UTable :data="users" :columns="columns" class="flex-1">
     <template #actions-cell="{row}">
-      <UButton v-if="row.original.id !== undefined"
-               @click="del(row.original.id)"
-               color="error">
-        Delete
-      </UButton>
-      <UButton v-if="row.original.id !== undefined"
-               :to="`/users/${row.original.id}`">
-        Edit
-      </UButton>
+      <UFieldGroup>
+        <UButton v-if="row.original.id !== undefined"
+                 :to="`/users/${row.original.id}`">
+          Edit
+        </UButton>
+        <UButton v-if="row.original.id !== undefined"
+                 @click="del(row.original.id)"
+                 color="error">
+          Delete
+        </UButton>
+      </UFieldGroup>
     </template>
   </UTable>
 </template>

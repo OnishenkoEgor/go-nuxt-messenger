@@ -9,6 +9,7 @@ import (
 	"messenger/sso/infrastructure/user/rest/request"
 	"messenger/sso/infrastructure/user/rest/response"
 	"net/http"
+	"strconv"
 )
 
 type Controller struct {
@@ -40,8 +41,21 @@ func (c Controller) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c Controller) Get(w http.ResponseWriter, r *http.Request) {
+	vars := router.Variables(r)
+	id, ok := vars["id"]
+
+	if !ok {
+		router.WriteResponse[string](true, "Error on get user", w)
+		return
+	}
+
+	preparedId, err := strconv.Atoi(id)
+	if err != nil {
+		router.WriteResponse[string](true, "Error: id is not INTEGER", w)
+	}
+
 	user, err := c.app.Queries.GetUserByIdQuery.Handle(query.GetUserByIdQuery{
-		Id: "qwe",
+		Id: preparedId,
 	})
 
 	if err != nil {
@@ -61,7 +75,13 @@ func (c Controller) Create(w http.ResponseWriter, r *http.Request) {
 	err := router.ParseRequest[request.CreateUserRequest](r, &userRequest)
 
 	if err != nil {
-		panic(err)
+		router.WriteResponse[string](true, "Error: failed parse request data", w)
+		return
+	}
+
+	if userRequest.Login == "" || userRequest.Password == "" {
+		router.WriteResponse[string](true, "Error: user data empty", w)
+		return
 	}
 
 	err = c.app.Commands.CreateUserCommand.Handle(command.CreateUserCommand{
@@ -79,7 +99,44 @@ func (c Controller) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c Controller) Update(w http.ResponseWriter, r *http.Request) {
+	vars := router.Variables(r)
+	id, ok := vars["id"]
+	if !ok {
+		router.WriteResponse[string](true, "Error on delete user", w)
+		return
+	}
 
+	preparedId, err := strconv.Atoi(id)
+	if err != nil {
+		router.WriteResponse[string](true, "Id is not INTEGER", w)
+		return
+	}
+
+	var userRequest request.UpdateUserRequest
+	err = router.ParseRequest[request.UpdateUserRequest](r, &userRequest)
+
+	if err != nil {
+		router.WriteResponse[string](true, "Failed parse request data", w)
+		return
+	}
+
+	if userRequest.Login == "" || userRequest.Password == "" {
+		router.WriteResponse[string](true, "User data empty", w)
+		return
+	}
+
+	err = c.app.Commands.UpdateUserCommand.Handle(command.UpdateUserCommand{
+		Id:       preparedId,
+		Login:    userRequest.Login,
+		Password: userRequest.Password,
+	})
+
+	if err != nil {
+		router.WriteResponse[string](false, "Failed update user", w)
+		return
+	}
+
+	router.WriteResponse[interface{}](false, nil, w)
 }
 
 func (c Controller) Delete(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +147,12 @@ func (c Controller) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := c.app.Commands.DeleteUserCommand.Handle(command.DeleteUserCommand{Id: id})
+	preparedId, err := strconv.Atoi(id)
+	if err != nil {
+		router.WriteResponse[string](true, "Error: id is not INTEGER", w)
+	}
+
+	err = c.app.Commands.DeleteUserCommand.Handle(command.DeleteUserCommand{Id: preparedId})
 
 	if err != nil {
 		router.WriteResponse[string](true, "Error on delete user", w)
